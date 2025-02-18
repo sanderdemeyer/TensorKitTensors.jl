@@ -8,6 +8,7 @@ export hubbard_space
 export c_plus_c_min, u_plus_u_min, d_plus_d_min
 export c_min_c_plus, u_min_u_plus, d_min_d_plus
 export c_num, u_num, d_num, ud_num
+export d_plus_u_min, u_plus_d_min, d_min_u_plus, u_min_d_plus
 
 export c⁺c⁻, u⁺u⁻, d⁺d⁻, c⁻c⁺, u⁻u⁺, d⁻d⁺
 export n, nꜛ, nꜜ, nꜛꜜ
@@ -340,6 +341,47 @@ function d_plus_d_min(T, ::Type{SU2Irrep}, ::Type{SU2Irrep})
     return error("Not implemented")
 end
 const d⁺d⁻ = d_plus_d_min
+
+function d_plus_u_min(T, ::Type{U1Irrep}, ::Type{Trivial})
+    t = two_site_operator(T, U1Irrep, Trivial)
+    I = sectortype(t)
+    t[(I(1, 1), I(0, 0), dual(I(0, 0)), dual(I(1, 1)))][2, 1, 1, 1] = 1
+    t[(I(0, 2), I(0, 0), dual(I(1, 1)), dual(I(1, 1)))][1, 1, 1, 1] = 1
+    t[(I(1, 1), I(1, 1), dual(I(0, 0)), dual(I(0, 2)))][2, 2, 1, 1] = 1
+    t[(I(0, 2), I(1, 1), dual(I(1, 1)), dual(I(0, 2)))][1, 2, 1, 1] = 1
+    return t
+end
+
+function u_plus_d_min(T, ::Type{U1Irrep}, ::Type{Trivial})
+    t = two_site_operator(T, U1Irrep, Trivial)
+    I = sectortype(t)
+    t[(I(1, 1), I(0, 0), dual(I(0, 0)), dual(I(1, 1)))][1, 1, 1, 2] = 1
+    t[(I(0, 2), I(0, 0), dual(I(1, 1)), dual(I(1, 1)))][1, 1, 2, 2] = -1
+    t[(I(1, 1), I(1, 1), dual(I(0, 0)), dual(I(0, 2)))][1, 1, 1, 1] = -1
+    t[(I(0, 2), I(1, 1), dual(I(1, 1)), dual(I(0, 2)))][1, 1, 2, 1] = 1
+    return t
+end
+
+function d_min_u_plus(T, ::Type{U1Irrep}, ::Type{Trivial})
+    t = two_site_operator(T, U1Irrep, Trivial)
+    I = sectortype(t)
+    t[(I(0, 0), I(1, 1), dual(I(1, 1)), dual(I(0, 0)))][1, 1, 2, 1] = -1
+    t[(I(0, 0), I(0, 2), dual(I(1, 1)), dual(I(1, 1)))][1, 1, 2, 2] = -1
+    t[(I(1, 1), I(1, 1), dual(I(0, 2)), dual(I(0, 0)))][1, 1, 1, 1] = -1
+    t[(I(1, 1), I(0, 2), dual(I(0, 2)), dual(I(1, 1)))][1, 1, 1, 2] = -1
+    return t
+end
+
+function u_min_d_plus(T, ::Type{U1Irrep}, ::Type{Trivial})
+    t = two_site_operator(T, U1Irrep, Trivial)
+    I = sectortype(t)
+    t[(I(0, 0), I(1, 1), dual(I(1, 1)), dual(I(0, 0)))][1, 2, 1, 1] = -1
+    t[(I(0, 0), I(0, 2), dual(I(1, 1)), dual(I(1, 1)))][1, 1, 1, 1] = 1
+    t[(I(1, 1), I(1, 1), dual(I(0, 2)), dual(I(0, 0)))][2, 2, 1, 1] = 1
+    t[(I(1, 1), I(0, 2), dual(I(0, 2)), dual(I(1, 1)))][2, 1, 1, 1] = -1
+    return t
+end
+
 
 @doc """
     u_min_u_plus([T], [particle_symmetry::Type{<:Sector}], [spin_symmetry::Type{<:Sector}])
